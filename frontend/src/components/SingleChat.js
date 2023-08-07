@@ -35,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { selectedChat, setSelectedChat, user, notification, setNotification } =
+  const { selectedChat, setSelectedChat, user, notification, setNotification, emotiontxt, setDisplay, showEmotion } =
     ChatState();
 
   const fetchMessages = async () => {
@@ -90,6 +90,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           config
         );
         socket.emit("new message", data);
+        
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -121,8 +122,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // eslint-disable-next-line
   }, [selectedChat]);
 
+  const sendEmotion = () => {
+    socket.emit("send emotion", {id: selectedChat._id, data: emotiontxt.v })
+  }
   useEffect(() => {
-    socket.on("message recieved", (newMessageRecieved) => {
+    if (showEmotion === "Don't Show Emotions") {
+      sendEmotion()
+    }
+    socket.on("message recieved", newMessageRecieved => {
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
@@ -133,8 +140,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
       } else {
         setMessages([...messages, newMessageRecieved]);
+        // setDisplay(data.e)
+        // console.log(data.e)
       }
     });
+    socket.on("emotion recieved", (emotion) => {
+      setDisplay(emotion)
+    })
   });
 
   const typingHandler = (e) => {
@@ -157,7 +169,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }, timerLength);
   };
-
+  console.log(emotiontxt.v)
   return (
     <>
       {selectedChat ? (

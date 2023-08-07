@@ -74,15 +74,22 @@ io.on("connection", (socket) => {
 
   socket.on("new message", (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
-
+    // let l = data.e;
+    // console.log("hek")
     if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) return;
 
       socket.in(user._id).emit("message recieved", newMessageRecieved);
+
     });
   });
+  socket.on("send emotion", (obj) => {
+    const id = obj.id
+    const emotion = obj.data
+    socket.in(id).emit("emotion recieved",emotion)
+  })
 
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");

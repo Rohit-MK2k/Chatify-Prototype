@@ -37,7 +37,7 @@ function SideDrawer() {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-
+  
   const {
     setSelectedChat,
     user,
@@ -45,6 +45,9 @@ function SideDrawer() {
     setNotification,
     chats,
     setChats,
+    emotion,
+    showEmotion,
+    displayEmotion,
   } = ChatState();
 
   const toast = useToast();
@@ -121,6 +124,7 @@ function SideDrawer() {
       });
     }
   };
+  
 
   return (
     <>
@@ -141,8 +145,10 @@ function SideDrawer() {
             </Text>
           </Button>
         </Tooltip>
+        <Button colorScheme='blue' onClick={emotion}>{showEmotion}</Button>
+        <Text fontFamily="Work sans">{displayEmotion}</Text>
         <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
+          Chatify
         </Text>
         <div>
           <Menu>
